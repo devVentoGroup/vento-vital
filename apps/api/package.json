@@ -1,0 +1,13 @@
+{
+  "name": "@vento-vital/api",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/server.js",
+  "dependencies": {
+    "@vento-vital/contracts": "file:../../packages/contracts"
+  },
+  "scripts": {
+    "test:contracts": "node --test tests/contracts/**/*.test.js"
+  }
+}

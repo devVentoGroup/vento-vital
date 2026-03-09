@@ -1,0 +1,7 @@
+{
+  "name": "@vento-vital/contracts",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/hoy.js"
+}
