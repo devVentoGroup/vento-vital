@@ -26,7 +26,8 @@ function createStyles(theme) {
     hourText: {
       fontSize: 12,
       color: theme.colors.textSecondary,
-      marginBottom: 6
+      marginBottom: 6,
+      fontFamily: "AvenirNext-Regular"
     },
     dot: {
       width: 13,
@@ -37,14 +38,14 @@ function createStyles(theme) {
     line: {
       width: 2,
       flex: 1,
-      backgroundColor: theme.colors.borderStrong,
+      backgroundColor: theme.colors.border,
       marginTop: 6
     },
     card: {
       flex: 1,
       borderWidth: 1,
       borderColor: theme.colors.borderStrong,
-      borderRadius: theme.radius.lg,
+      borderRadius: theme.radius.xl,
       padding: theme.spacing.sm,
       gap: 12,
       ...theme.elevations.card
@@ -70,7 +71,7 @@ function createStyles(theme) {
       alignSelf: "flex-start",
       borderRadius: 999,
       paddingHorizontal: 8,
-      paddingVertical: 4,
+      paddingVertical: 5,
       borderWidth: 1
     },
     statusChipText: {
@@ -82,7 +83,7 @@ function createStyles(theme) {
       borderRadius: 999,
       borderWidth: 1,
       paddingHorizontal: 10,
-      paddingVertical: 4
+      paddingVertical: 5
     },
     scoreBadgeText: {
       fontSize: 11,
@@ -112,8 +113,8 @@ function createStyles(theme) {
       borderWidth: 1,
       paddingHorizontal: 10,
       paddingVertical: 4,
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.cardAlt
+      borderColor: theme.colors.borderStrong,
+      backgroundColor: theme.colors.cardMuted
     },
     reasonCodeText: {
       fontSize: 11,
@@ -127,12 +128,12 @@ function createStyles(theme) {
       lineHeight: 18
     },
     reasonCard: {
-      borderRadius: 12,
+      borderRadius: 16,
       borderWidth: 1,
       borderColor: theme.colors.borderStrong,
-      backgroundColor: theme.mode === "dark" ? "#172220" : "#F3FCF8",
+      backgroundColor: theme.colors.cardMuted,
       paddingHorizontal: 10,
-      paddingVertical: 8,
+      paddingVertical: 10,
       gap: 4
     },
     reasonLabel: {
@@ -149,26 +150,28 @@ function createStyles(theme) {
     btnPrimary: {
       flex: 1,
       backgroundColor: theme.colors.cta,
-      borderRadius: 12,
-      paddingVertical: 9,
-      alignItems: "center"
+      borderRadius: 14,
+      paddingVertical: 10,
+      alignItems: "center",
+      borderWidth: 1,
+      borderColor: theme.colors.accentBrand
     },
     btnSecondary: {
       flex: 1,
       borderWidth: 1,
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.surface,
-      borderRadius: 12,
-      paddingVertical: 9,
+      borderColor: theme.colors.borderStrong,
+      backgroundColor: theme.colors.card,
+      borderRadius: 14,
+      paddingVertical: 10,
       alignItems: "center"
     },
     btnTertiary: {
       flex: 1,
       borderWidth: 1,
-      borderColor: theme.colors.vitalAccent,
-      backgroundColor: theme.mode === "dark" ? "#321226" : "#FFF0F7",
-      borderRadius: 12,
-      paddingVertical: 9,
+      borderColor: theme.colors.accentBrand,
+      backgroundColor: theme.colors.accentBrandSoft,
+      borderRadius: 14,
+      paddingVertical: 10,
       alignItems: "center"
     },
     btnPrimaryText: {
@@ -184,7 +187,7 @@ function createStyles(theme) {
       fontFamily: "AvenirNext-DemiBold"
     },
     btnTertiaryText: {
-      color: theme.colors.vitalAccent,
+      color: theme.colors.accentBrandStrong,
       fontWeight: "600",
       fontSize: 12,
       fontFamily: "AvenirNext-DemiBold"
@@ -208,10 +211,10 @@ function createStyles(theme) {
       color: theme.colors.warning
     },
     blockedWrap: {
-      borderRadius: 12,
+      borderRadius: 14,
       borderWidth: 1,
       borderColor: theme.colors.warning,
-      backgroundColor: theme.mode === "dark" ? "#2E2316" : "#FFF7ED",
+      backgroundColor: theme.mode === "dark" ? "#2D231A" : "#FBF1E7",
       paddingHorizontal: 10,
       paddingVertical: 8
     },
@@ -258,8 +261,8 @@ export function TaskTimelineCard({
               <Text style={[styles.statusChipText, { color: s.statusColor }]}>{s.label}</Text>
             </View>
           </View>
-          <View style={[styles.scoreBadge, { borderColor: theme.colors.progressBorder, backgroundColor: theme.colors.mintSoft }]}>
-            <Text style={[styles.scoreBadgeText, { color: theme.colors.mintDark }]}>{`Prioridad ${task.priorityScore ?? 0}`}</Text>
+        <View style={[styles.scoreBadge, { borderColor: theme.colors.borderStrong, backgroundColor: theme.colors.accentBrandSoft }]}>
+          <Text style={[styles.scoreBadgeText, { color: theme.colors.accentBrandStrong }]}>{`Prioridad ${task.priorityScore ?? 0}`}</Text>
           </View>
         </View>
         <View style={styles.chipsRow}>
@@ -298,7 +301,7 @@ export function TaskTimelineCard({
             style={({ pressed }) => [
               styles.btnSecondary,
               actionDisabled ? { opacity: 0.55 } : null,
-              pressed && !actionDisabled ? { borderColor: theme.colors.progressBorder } : null
+              pressed && !actionDisabled ? { borderColor: theme.colors.accentBrand } : null
             ]}
             disabled={actionDisabled}
             onPress={onSnooze}
@@ -309,7 +312,7 @@ export function TaskTimelineCard({
             style={({ pressed }) => [
               styles.btnTertiary,
               actionDisabled ? { opacity: 0.55 } : null,
-              pressed && !actionDisabled ? { borderColor: theme.colors.vitalAccent, opacity: 0.9 } : null
+              pressed && !actionDisabled ? { borderColor: theme.colors.accentBrandStrong, opacity: 0.9 } : null
             ]}
             disabled={actionDisabled}
             onPress={onReprogram}

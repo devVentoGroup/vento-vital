@@ -1,0 +1,31 @@
+---
+description: Continuidad documental obligatoria para Vento Vital
+alwaysApply: true
+---
+
+# Vital Continuity
+
+Antes de proponer cambios, implementar, o replantear decisiones en `vento-vital`, lee primero:
+
+- `docs/VITAL-SESSION-HANDOFF.md`
+- `docs/VITAL-DOCS-INDEX.md`
+
+Usa esos archivos como contexto principal.
+
+## Fuente de verdad
+
+- La vision general vive en `docs/VITAL-ROADMAP-MAESTRO-2026-03-13.md`.
+- Las decisiones por version viven en `docs/VITAL-V1-SPEC-2026-03-13.md`, `docs/VITAL-V2-SPEC-2026-03-13.md`, `docs/VITAL-V3-SPEC-2026-03-13.md` y `docs/VITAL-V4-SPEC-2026-03-13.md`.
+- La arquitectura y reglas viven en `docs/VITAL-CORE-MODEL-2026-03-13.md`, `docs/VITAL-DOMAIN-SCHEMA-v1-2026-03-13.md` y `docs/VITAL-DECISION-RULES-v1-2026-03-13.md`.
+- El catalogo vive en `docs/VITAL-EXERCISE-CATALOG-SPEC-2026-03-13.md`, `docs/VITAL-CATALOG-SEED-v1-2026-03-13.md` y `docs/VITAL-CATALOG-SEED-DATA-v1-2026-03-13.md`.
+
+## Reglas de trabajo
+
+- No contradigas decisiones ya documentadas sin proponer actualizacion explicita del documento correspondiente.
+- No reinicies la vision del producto desde cero si ya existe documentacion que la define.
+- Si una conversacion cambia una decision importante, actualiza `docs/VITAL-SESSION-HANDOFF.md`.
+- Si una tarea toca una parte concreta del sistema, lee los docs fuente de verdad relevantes antes de editar codigo o proponer cambios.
+
+## Regla final
+
+Si una decision importante solo existe en el chat y no en los documentos de Vital, esa decision no esta realmente protegida.

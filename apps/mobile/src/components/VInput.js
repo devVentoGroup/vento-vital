@@ -18,18 +18,18 @@ export function VInput({
     <View
       style={[
         {
-          borderWidth: 1.2,
-          borderColor: focused ? theme.colors.progressBorder : theme.colors.border,
-          borderRadius: theme.radius.md,
-          minHeight: 48,
-          paddingHorizontal: 12,
+          borderWidth: 1,
+          borderColor: focused ? theme.colors.accentBrand : theme.colors.border,
+          borderRadius: theme.radius.lg,
+          minHeight: 50,
+          paddingHorizontal: 14,
           justifyContent: "center",
-          backgroundColor: theme.colors.cardAlt
+          backgroundColor: theme.colors.card
         },
         focused
           ? {
-              shadowColor: theme.mode === "dark" ? "transparent" : "#22C55E",
-              shadowOpacity: theme.mode === "dark" ? 0 : 0.12,
+              shadowColor: theme.mode === "dark" ? "#000000" : "#C95A73",
+              shadowOpacity: theme.mode === "dark" ? 0.12 : 0.12,
               shadowRadius: theme.mode === "dark" ? 0 : 12,
               shadowOffset: { width: 0, height: 4 },
               elevation: theme.mode === "dark" ? 0 : 2

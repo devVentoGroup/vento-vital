@@ -138,19 +138,31 @@ const CYCLE_FOCUS_OPTIONS = [
   { key: "recovery_first", label: "Recuperación prioritaria" }
 ];
 
+function getSportLabel(sportKey) {
+  return SPORT_OPTIONS.find((sport) => sport.key === sportKey)?.label || sportKey || "Sin definir";
+}
+
+function getObjectiveLabel(objectiveKey) {
+  return SPORTS_OBJECTIVES.find((objective) => objective.key === objectiveKey)?.label || objectiveKey;
+}
+
 function createStyles(theme) {
   return {
     section: { ...theme.blocks.section },
     hero: {
       borderWidth: 1,
-      borderColor: theme.colors.progressBorder,
+      borderColor: theme.colors.borderStrong,
       borderRadius: theme.radius.xxl,
       overflow: "hidden",
       ...theme.elevations.card
     },
     heroInner: {
-      padding: theme.spacing.md,
-      gap: 10
+      padding: theme.spacing.lg,
+      gap: 12
+    },
+    heroEyebrow: {
+      ...theme.typography.label,
+      color: theme.colors.accentBrandStrong
     },
     heroTitle: {
       color: theme.colors.textPrimary,
@@ -213,8 +225,54 @@ function createStyles(theme) {
     moduleConfigCard: {
       ...theme.blocks.panel,
       borderColor: theme.colors.borderStrong,
-      backgroundColor: theme.colors.cardAlt,
+      backgroundColor: theme.colors.cardMuted,
       gap: 8
+    },
+    contextCard: {
+      ...theme.blocks.action,
+      borderColor: theme.colors.borderStrong,
+      backgroundColor: theme.colors.cardAlt,
+      gap: 10
+    },
+    contextEyebrow: {
+      ...theme.typography.label,
+      color: theme.colors.accentBrandStrong
+    },
+    contextTitle: {
+      color: theme.colors.textPrimary,
+      fontSize: 14,
+      fontWeight: "700",
+      fontFamily: "AvenirNext-DemiBold"
+    },
+    contextText: {
+      color: theme.colors.textSecondary,
+      fontSize: 12,
+      lineHeight: 17,
+      fontFamily: "AvenirNext-Regular"
+    },
+    summaryGrid: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 8
+    },
+    summaryCell: {
+      flexGrow: 1,
+      minWidth: 140,
+      ...theme.blocks.panel,
+      borderColor: theme.colors.borderStrong,
+      backgroundColor: theme.colors.cardMuted,
+      gap: 4
+    },
+    summaryLabel: {
+      color: theme.colors.textSecondary,
+      fontSize: 11,
+      fontFamily: "AvenirNext-Regular"
+    },
+    summaryValue: {
+      color: theme.colors.textPrimary,
+      fontSize: 13,
+      fontWeight: "700",
+      fontFamily: "AvenirNext-DemiBold"
     },
     moduleConfigTitle: {
       color: theme.colors.textPrimary,
@@ -264,6 +322,23 @@ export function ProfileScreen({ theme, profile, flow }) {
   const [mealsPerDay, setMealsPerDay] = useState("3");
 
   const activeModuleCount = (flow.modulePreferences || []).filter((m) => m.is_enabled).length;
+  const selectedObjectivesLabel = selectedObjectives.length > 0 ? selectedObjectives.map(getObjectiveLabel).join(" · ") : "Sin objetivos definidos";
+  const contextStatus = flow.safetyStatus?.requires_professional_check ? "Observación" : "Operativo";
+  const contextSummary = useMemo(() => {
+    if (!flow.hasSession) {
+      return "Sin sesión activa. Inicia sesión para cargar módulos, deportes y preferencias que alimentan el plan.";
+    }
+    if (selectedSports.length === 0) {
+      return "Todavía no hay un deporte activo definido. Configura uno para que Vital pueda priorizar foco y ciclo.";
+    }
+    if (activeModuleCount === 0) {
+      return "No hay módulos activos. Activa al menos uno para que el sistema tenga una operación diaria clara.";
+    }
+    if (flow.safetyStatus?.requires_professional_check) {
+      return "Hay una señal de seguridad activa. Mantén el plan conservador y revisa la configuración antes de escalar.";
+    }
+    return "El contexto base ya está cargado. Vital puede usar tus módulos, deporte principal y foco del ciclo como línea de operación.";
+  }, [flow.hasSession, selectedSports, activeModuleCount, flow.safetyStatus]);
 
   function pulse() {
     Haptics.selectionAsync().catch(() => {});
@@ -415,25 +490,30 @@ export function ProfileScreen({ theme, profile, flow }) {
     <>
       <View style={styles.hero}>
         <LinearGradient
-          colors={theme.mode === "dark" ? ["#142720", theme.colors.surface] : ["#E7FBF3", "#FFFFFF"]}
+          colors={
+            theme.mode === "dark"
+              ? [theme.colors.surfaceHero, theme.colors.card, theme.colors.surface]
+              : [theme.colors.surfaceHero, theme.colors.card, theme.colors.surface]
+          }
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.heroInner}
         >
+          <Text style={styles.heroEyebrow}>VITAL OPERATIONS · PERFIL</Text>
           <Text style={styles.heroTitle}>Perfil</Text>
-          <Text style={styles.heroSubtitle}>Controla módulos, enfoque deportivo y preferencias de tu plan.</Text>
+          <Text style={styles.heroSubtitle}>Configura el contexto real que el sistema usa para modular tu plan, tus deportes y tus prioridades.</Text>
           <View style={styles.heroRow}>
-            <View style={[styles.statusChip, { borderColor: theme.colors.progressBorder, backgroundColor: theme.colors.mintSoft }]}>
-              <Text style={[styles.statusChipText, { color: theme.colors.mintDark }]}>{flow.hasSession ? "Sesión activa" : "Sin sesión"}</Text>
+            <View style={[styles.statusChip, { borderColor: theme.colors.borderStrong, backgroundColor: theme.colors.accentBrandSoft }]}>
+              <Text style={[styles.statusChipText, { color: theme.colors.accentBrandStrong }]}>{flow.hasSession ? "Sesión activa" : "Sin sesión"}</Text>
             </View>
-            <View style={[styles.statusChip, { borderColor: theme.colors.border, backgroundColor: theme.colors.card }]}>
+            <View style={[styles.statusChip, { borderColor: theme.colors.borderStrong, backgroundColor: theme.colors.cardMuted }]}>
               <Text style={[styles.statusChipText, { color: theme.colors.textPrimary }]}>{`Dispositivo ${profile.formFactor}`}</Text>
             </View>
           </View>
         </LinearGradient>
       </View>
 
-      <VCard theme={theme} tone="surface" style={styles.section}>
+      <VCard theme={theme} tone="muted" style={styles.section}>
         <VSectionHeader theme={theme} title="Datos de cuenta" subtitle="Configuración personal de tu perfil." />
         {loading ? (
           <>
@@ -492,25 +572,56 @@ export function ProfileScreen({ theme, profile, flow }) {
         )}
       </VCard>
 
-      <VCard theme={theme} tone="surface" style={styles.section}>
+      <VCard theme={theme} tone="muted" style={styles.section}>
+        <VSectionHeader
+          theme={theme}
+          title="Contexto operativo"
+          subtitle="Lectura rápida de las variables base que ya están condicionando tu configuración actual."
+        />
+        <View style={styles.contextCard}>
+          <Text style={styles.contextEyebrow}>BASE ACTUAL</Text>
+          <Text style={styles.contextTitle}>{`${contextStatus} · ${getSportLabel(primarySport)}`}</Text>
+          <Text style={styles.contextText}>{contextSummary}</Text>
+          <View style={styles.summaryGrid}>
+            <View style={styles.summaryCell}>
+              <Text style={styles.summaryLabel}>Módulos activos</Text>
+              <Text style={styles.summaryValue}>{activeModuleCount > 0 ? `${activeModuleCount} activos` : "Sin módulos"}</Text>
+            </View>
+            <View style={styles.summaryCell}>
+              <Text style={styles.summaryLabel}>Deporte principal</Text>
+              <Text style={styles.summaryValue}>{selectedSports.length > 0 ? getSportLabel(primarySport || selectedSports[0]) : "No definido"}</Text>
+            </View>
+            <View style={styles.summaryCell}>
+              <Text style={styles.summaryLabel}>Foco del ciclo</Text>
+              <Text style={styles.summaryValue}>{CYCLE_FOCUS_OPTIONS.find((focus) => focus.key === cycleFocus)?.label || "Balanceado"}</Text>
+            </View>
+            <View style={styles.summaryCell}>
+              <Text style={styles.summaryLabel}>Objetivos</Text>
+              <Text style={styles.summaryValue}>{selectedObjectivesLabel}</Text>
+            </View>
+          </View>
+        </View>
+      </VCard>
+
+      <VCard theme={theme} tone="muted" style={styles.section}>
         <VSectionHeader theme={theme} title="Módulos activos" subtitle="Activa solo lo que necesitas para tu flujo diario." />
         <View style={styles.statusRow}>
-          <View style={[styles.statusChip, { borderColor: theme.colors.progressBorder, backgroundColor: theme.colors.mintSoft }]}>
-            <Text style={[styles.statusChipText, { color: theme.colors.mintDark }]}>{`Activos ${activeModuleCount}`}</Text>
+          <View style={[styles.statusChip, { borderColor: theme.colors.borderStrong, backgroundColor: theme.colors.accentBrandSoft }]}>
+            <Text style={[styles.statusChipText, { color: theme.colors.accentBrandStrong }]}>{`Activos ${activeModuleCount}`}</Text>
           </View>
           <View
             style={[
               styles.statusChip,
               {
-                borderColor: flow.safetyStatus?.requires_professional_check ? theme.colors.warning : theme.colors.progressBorder,
-                backgroundColor: flow.safetyStatus?.requires_professional_check ? "#FEF3C7" : theme.colors.mintSoft
+                borderColor: flow.safetyStatus?.requires_professional_check ? theme.colors.warning : theme.colors.borderStrong,
+                backgroundColor: flow.safetyStatus?.requires_professional_check ? "#FEF3C7" : theme.colors.cardMuted
               }
             ]}
           >
             <Text
               style={[
                 styles.statusChipText,
-                { color: flow.safetyStatus?.requires_professional_check ? theme.colors.warning : theme.colors.mintDark }
+                { color: flow.safetyStatus?.requires_professional_check ? theme.colors.warning : theme.colors.textSecondary }
               ]}
             >
               {flow.safetyStatus?.requires_professional_check ? "Revisión recomendada" : "Sin alertas críticas"}
@@ -587,7 +698,7 @@ export function ProfileScreen({ theme, profile, flow }) {
         ) : null}
       </VCard>
 
-      <VCard theme={theme} tone="surface" style={styles.section}>
+      <VCard theme={theme} tone="muted" style={styles.section}>
         <VSectionHeader
           theme={theme}
           title="Perfil deportivo compuesto"
@@ -660,10 +771,13 @@ export function ProfileScreen({ theme, profile, flow }) {
           onPress={onSaveSportsProfile}
           disabled={!flow.hasSession || sportsSaving || flow.sportsProfileLoading}
         />
+        {selectedSports.length === 0 ? (
+          <Text style={styles.sportsHint}>Sin deportes activos, Vital todavia no puede priorizar interferencias, enfoque ni criterio deportivo principal.</Text>
+        ) : null}
         {flow.sportsProfileError ? <Text style={styles.error}>{flow.sportsProfileError}</Text> : null}
       </VCard>
 
-      <VCard theme={theme} tone="surface" style={styles.section}>
+      <VCard theme={theme} tone="muted" style={styles.section}>
         <VSectionHeader
           theme={theme}
           title="Notificaciones"
@@ -684,7 +798,7 @@ export function ProfileScreen({ theme, profile, flow }) {
         ) : null}
       </VCard>
 
-      <VCard theme={theme} tone="surface" style={styles.section}>
+      <VCard theme={theme} tone="muted" style={styles.section}>
         <VSectionHeader
           theme={theme}
           title="Nutricion avanzada"
@@ -721,6 +835,9 @@ export function ProfileScreen({ theme, profile, flow }) {
             style={{ flex: 1 }}
           />
         </View>
+        {!flow.nutritionProfile ? (
+          <Text style={styles.sportsHint}>Aun no hay perfil nutricional cargado. En `V1` esto sigue siendo base simple, pero ya deja preparada la capa para decisiones futuras.</Text>
+        ) : null}
         {flow.nutritionError ? <Text style={styles.error}>{flow.nutritionError}</Text> : null}
       </VCard>
     </>

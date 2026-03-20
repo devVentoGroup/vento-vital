@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 
 export function VSectionHeader({ theme, title, subtitle, right }) {
   return (
-    <View style={{ gap: 5 }}>
+    <View style={{ gap: 6 }}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
         <Text style={{ ...theme.typography.title, color: theme.colors.textPrimary }}>{title}</Text>
         {right || null}

@@ -16,31 +16,38 @@ function createStyles(theme) {
   return {
     header: {
       borderWidth: 1,
-      borderColor: theme.colors.border,
+      borderColor: theme.colors.borderStrong,
       borderRadius: theme.radius.xxl,
-      overflow: "hidden"
+      overflow: "hidden",
+      ...theme.elevations.card
     },
     headerInner: {
-      padding: theme.spacing.md,
-      gap: 10
+      padding: theme.spacing.lg,
+      gap: 12
+    },
+    eyebrow: {
+      ...theme.typography.label,
+      color: theme.colors.accentBrandStrong
     },
     title: { ...theme.typography.h1, color: theme.colors.textPrimary },
-    subtitle: { color: theme.colors.textSecondary, fontSize: 14 },
+    subtitle: { color: theme.colors.textSecondary, fontSize: 14, lineHeight: 20, fontFamily: "AvenirNext-Regular" },
     subtitleStrong: {
-      color: theme.colors.mintDark,
+      color: theme.colors.textPrimary,
       fontSize: 12,
       fontWeight: "700",
-      fontFamily: "AvenirNext-DemiBold"
+      fontFamily: "AvenirNext-DemiBold",
+      opacity: 0.8
     },
     tabBar: {
       flexDirection: "row",
       borderWidth: 1,
-      borderColor: theme.colors.border,
+      borderColor: theme.colors.borderStrong,
       borderRadius: theme.radius.xxl,
-      padding: 5,
+      padding: 6,
       gap: 6,
       overflow: "hidden",
-      backgroundColor: theme.colors.card
+      backgroundColor: theme.colors.card,
+      ...theme.elevations.card
     },
     tabBarInner: {
       flexDirection: "row",
@@ -49,29 +56,34 @@ function createStyles(theme) {
     },
     tabButton: {
       flex: 1,
-      minHeight: 44,
-      borderRadius: 14,
+      minHeight: 46,
+      borderRadius: 16,
       justifyContent: "center",
       alignItems: "center",
       borderWidth: 1,
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.surface
+      borderColor: "transparent",
+      backgroundColor: theme.colors.card
     },
     tabButtonActive: {
-      backgroundColor: theme.colors.mintPrimary,
-      borderColor: theme.colors.mintPrimary
+      backgroundColor: theme.colors.accentBrandSoft,
+      borderColor: theme.colors.borderStrong
     },
     tabText: {
       color: theme.colors.textSecondary,
       fontWeight: "600",
       fontSize: 14,
-      fontFamily: "AvenirNext-DemiBold"
+      fontFamily: "AvenirNext-DemiBold",
+      letterSpacing: 0.2
     },
     tabTextActive: {
-      color: theme.colors.ctaText
+      color: theme.colors.accentBrandStrong
     },
     activePill: {
-      display: "none"
+      marginTop: 5,
+      width: 24,
+      height: 3,
+      borderRadius: 999,
+      backgroundColor: theme.colors.accentBrand
     }
   };
 }
@@ -123,14 +135,19 @@ export function MainTabs({ theme, profile, caps, flow }) {
       <PageShell theme={theme} profile={profile}>
         <View style={styles.header}>
           <LinearGradient
-            colors={theme.mode === "dark" ? [theme.colors.surface, theme.colors.bg] : ["#DFF8EE", theme.colors.surface]}
+            colors={
+              theme.mode === "dark"
+                ? [theme.colors.surfaceHero, theme.colors.card, theme.colors.bg]
+                : [theme.colors.surfaceHero, theme.colors.card, theme.colors.surface]
+            }
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.headerInner}
           >
+            <Text style={styles.eyebrow}>VENTO ECOSYSTEM · VITAL</Text>
             <Text style={styles.title}>Vento Vital</Text>
-            <Text style={styles.subtitle}>Tu sistema diario para entrenar, recuperarte y sostener hábitos.</Text>
-            <Text style={styles.subtitleStrong}>Plan modular activo · enfoque en ejecución diaria</Text>
+            <Text style={styles.subtitle}>Dirección diaria para entrenar, recuperarte y sostener hábitos sin perder claridad.</Text>
+            <Text style={styles.subtitleStrong}>Ejecución diaria con criterio, contexto y una identidad más Vento.</Text>
           </LinearGradient>
         </View>
 
@@ -140,7 +157,7 @@ export function MainTabs({ theme, profile, caps, flow }) {
               style={({ pressed }) => [
                 styles.tabButton,
                 activeTab === TAB_KEYS.HOY ? styles.tabButtonActive : null,
-                pressed ? { opacity: 0.9 } : null
+                pressed ? { opacity: 0.9, borderColor: theme.colors.borderStrong } : null
               ]}
               onPress={() => setActiveTab(TAB_KEYS.HOY)}
             >
@@ -151,7 +168,7 @@ export function MainTabs({ theme, profile, caps, flow }) {
               style={({ pressed }) => [
                 styles.tabButton,
                 activeTab === TAB_KEYS.SUMMARY ? styles.tabButtonActive : null,
-                pressed ? { opacity: 0.9 } : null
+                pressed ? { opacity: 0.9, borderColor: theme.colors.borderStrong } : null
               ]}
               onPress={() => setActiveTab(TAB_KEYS.SUMMARY)}
             >
@@ -162,7 +179,7 @@ export function MainTabs({ theme, profile, caps, flow }) {
               style={({ pressed }) => [
                 styles.tabButton,
                 activeTab === TAB_KEYS.PROFILE ? styles.tabButtonActive : null,
-                pressed ? { opacity: 0.9 } : null
+                pressed ? { opacity: 0.9, borderColor: theme.colors.borderStrong } : null
               ]}
               onPress={() => setActiveTab(TAB_KEYS.PROFILE)}
             >

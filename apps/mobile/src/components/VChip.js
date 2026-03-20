@@ -3,9 +3,9 @@ import { Pressable, Text, View } from "react-native";
 
 export function VChip({ theme, label, active = false, onPress, style, textStyle, interactive = true }) {
   const baseStyle = {
-    borderWidth: 1.1,
-    borderColor: active ? theme.colors.progressBorder : theme.colors.borderStrong,
-    backgroundColor: active ? theme.colors.mintSoft : theme.colors.cardAlt,
+    borderWidth: 1,
+    borderColor: active ? theme.colors.accentBrand : theme.colors.borderStrong,
+    backgroundColor: active ? theme.colors.accentBrandSoft : theme.colors.cardAlt,
     borderRadius: 999,
     paddingHorizontal: 12,
     paddingVertical: 7,
@@ -13,11 +13,11 @@ export function VChip({ theme, label, active = false, onPress, style, textStyle,
     justifyContent: "center"
   };
   const baseText = {
-    color: active ? theme.colors.mintDark : theme.colors.textSecondary,
+    color: active ? theme.colors.accentBrandStrong : theme.colors.textSecondary,
     fontSize: 12,
     fontWeight: "600",
     fontFamily: "AvenirNext-DemiBold",
-    letterSpacing: 0.1
+    letterSpacing: 0.2
   };
 
   if (interactive) {
@@ -25,7 +25,7 @@ export function VChip({ theme, label, active = false, onPress, style, textStyle,
       <Pressable
         style={({ pressed }) => [
           baseStyle,
-          pressed ? { opacity: 0.88, borderColor: theme.colors.progressBorder } : null,
+          pressed ? { opacity: 0.88, borderColor: theme.colors.accentBrand } : null,
           style
         ]}
         onPress={onPress}

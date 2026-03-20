@@ -15,16 +15,21 @@ const MODULE_LABELS = {
 
 function createStyles(theme) {
   return {
-    section: { padding: theme.spacing.sm, gap: theme.spacing.xs },
+    section: { padding: theme.spacing.sm, gap: theme.spacing.sm },
     hero: {
       borderRadius: theme.radius.xxl,
       borderWidth: 1,
-      borderColor: theme.colors.progressBorder,
-      overflow: "hidden"
+      borderColor: theme.colors.borderStrong,
+      overflow: "hidden",
+      ...theme.elevations.card
     },
     heroInner: {
-      padding: theme.spacing.md,
-      gap: 10
+      padding: theme.spacing.lg,
+      gap: 12
+    },
+    heroEyebrow: {
+      ...theme.typography.label,
+      color: theme.colors.accentBrandStrong
     },
     heroTitle: {
       color: theme.colors.textPrimary,
@@ -51,8 +56,8 @@ function createStyles(theme) {
     metricCard: {
       flex: 1,
       ...theme.blocks.metric,
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.card,
+      borderColor: theme.colors.borderStrong,
+      backgroundColor: theme.colors.cardMuted,
       gap: 4
     },
     metricCardLabel: {
@@ -79,18 +84,41 @@ function createStyles(theme) {
     callout: {
       marginTop: 8,
       ...theme.blocks.panel,
-      backgroundColor: theme.colors.mintSoft,
-      borderColor: theme.colors.progressBorder,
+      backgroundColor: theme.colors.cardAlt,
+      borderColor: theme.colors.borderStrong,
       gap: 6
     },
     calloutTitle: {
-      color: theme.colors.mintDark,
+      color: theme.colors.accentBrandStrong,
       fontWeight: "700",
       fontSize: 13,
       fontFamily: "AvenirNext-DemiBold"
     },
     calloutText: {
-      color: theme.colors.mintDark,
+      color: theme.colors.textSecondary,
+      fontSize: 12,
+      lineHeight: 17,
+      fontFamily: "AvenirNext-Regular"
+    },
+    emptyStateCard: {
+      marginTop: 8,
+      ...theme.blocks.action,
+      backgroundColor: theme.colors.cardAlt,
+      borderColor: theme.colors.borderStrong,
+      gap: 8
+    },
+    emptyStateEyebrow: {
+      ...theme.typography.label,
+      color: theme.colors.accentBrandStrong
+    },
+    emptyStateTitle: {
+      color: theme.colors.textPrimary,
+      fontSize: 14,
+      fontWeight: "700",
+      fontFamily: "AvenirNext-DemiBold"
+    },
+    emptyStateText: {
+      color: theme.colors.textSecondary,
       fontSize: 12,
       lineHeight: 17,
       fontFamily: "AvenirNext-Regular"
@@ -98,9 +126,9 @@ function createStyles(theme) {
     trendCard: {
       marginTop: 8,
       borderRadius: theme.radius.xl,
-      backgroundColor: theme.colors.card,
+      backgroundColor: theme.colors.cardMuted,
       borderWidth: 1,
-      borderColor: theme.colors.border,
+      borderColor: theme.colors.borderStrong,
       padding: theme.spacing.sm,
       gap: 8,
       ...theme.elevations.card
@@ -135,7 +163,7 @@ function createStyles(theme) {
     barFill: {
       width: "100%",
       borderRadius: 999,
-      backgroundColor: theme.colors.mintPrimary
+      backgroundColor: theme.colors.accentBrand
     },
     barLabel: {
       fontSize: 10,
@@ -174,8 +202,8 @@ function createStyles(theme) {
     actionCard: {
       marginTop: 8,
       ...theme.blocks.action,
-      backgroundColor: theme.colors.surface,
-      borderColor: theme.colors.border,
+      backgroundColor: theme.colors.cardAlt,
+      borderColor: theme.colors.borderStrong,
       gap: 8
     },
     actionTitle: {
@@ -193,8 +221,8 @@ function createStyles(theme) {
     planningCard: {
       marginTop: 8,
       ...theme.blocks.action,
-      backgroundColor: theme.colors.card,
-      borderColor: theme.colors.border,
+      backgroundColor: theme.colors.cardMuted,
+      borderColor: theme.colors.borderStrong,
       gap: 8
     },
     planningItem: {
@@ -215,8 +243,8 @@ function createStyles(theme) {
     cycleRow: {
       borderRadius: theme.radius.lg,
       borderWidth: 1,
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.borderStrong,
+      backgroundColor: theme.colors.cardAlt,
       paddingHorizontal: 10,
       paddingVertical: 8,
       gap: 2
@@ -267,6 +295,42 @@ function getActionPlan({ summary, moduleRows, modulePreferences, safetyStatus })
     actions.push("Seguridad en observación: evita carga intensa y prioriza recuperación hasta nueva evaluación.");
   }
   return actions.slice(0, 3);
+}
+
+function getWeeklyOperatingStatus({ summary, planningRows, cycleAdjustments, safetyStatus }) {
+  if (safetyStatus?.requires_professional_check) {
+    return {
+      eyebrow: "Estado de la semana",
+      title: "Semana en observación",
+      text: "Hay una señal de seguridad activa. Mantén la operación conservadora hasta revisar carga, dolor o contexto."
+    };
+  }
+  if (!summary.hasData) {
+    return {
+      eyebrow: "Estado de la semana",
+      title: "Semana sin línea base",
+      text: "Vital todavía no tiene suficiente historial para modular con criterio. La prioridad ahora es consistencia mínima diaria."
+    };
+  }
+  if (cycleAdjustments.length > 0) {
+    return {
+      eyebrow: "Estado de la semana",
+      title: "Semana ajustada",
+      text: "Ya existen ajustes de ciclo para hoy. Usa este resumen para sostener dirección sin perder adherencia."
+    };
+  }
+  if (planningRows.length > 0 && summary.avgPct >= 70) {
+    return {
+      eyebrow: "Estado de la semana",
+      title: "Semana estable",
+      text: "La adherencia y las prioridades semanales están alineadas. Puedes mantener foco sin agregar complejidad extra."
+    };
+  }
+  return {
+    eyebrow: "Estado de la semana",
+    title: "Semana por consolidar",
+    text: "Hay señales útiles, pero todavía conviene simplificar la operación y reforzar uno o dos frentes críticos."
+  };
 }
 
 export function SummaryScreen({ theme, flow }) {
@@ -324,22 +388,37 @@ export function SummaryScreen({ theme, flow }) {
         .slice(0, 6),
     [weeklyPlan]
   );
+  const weeklyOperatingStatus = useMemo(
+    () =>
+      getWeeklyOperatingStatus({
+        summary,
+        planningRows,
+        cycleAdjustments,
+        safetyStatus: flow.safetyStatus || null
+      }),
+    [summary, planningRows, cycleAdjustments, flow.safetyStatus]
+  );
 
   return (
     <>
       <View style={styles.hero}>
         <LinearGradient
-          colors={theme.mode === "dark" ? ["#12261F", theme.colors.surface] : ["#E7FBF3", "#FFFFFF"]}
+          colors={
+            theme.mode === "dark"
+              ? [theme.colors.surfaceHero, theme.colors.card, theme.colors.surface]
+              : [theme.colors.surfaceHero, theme.colors.card, theme.colors.surface]
+          }
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.heroInner}
         >
+          <Text style={styles.heroEyebrow}>VITAL OPERATIONS · RESUMEN</Text>
           <Text style={styles.heroTitle}>Resumen</Text>
-          <Text style={styles.heroSub}>Tu avance semanal y recomendaciones claras para decidir mejor qué hacer hoy.</Text>
+          <Text style={styles.heroSub}>Lectura semanal de adherencia, prioridades y ajustes para decidir con criterio antes de abrir el día.</Text>
         </LinearGradient>
       </View>
-      <VCard theme={theme} tone="surface" style={styles.section}>
-        <VSectionHeader theme={theme} title="Panorama semanal" subtitle="Adherencia e insights accionables." />
+      <VCard theme={theme} tone="muted" style={styles.section}>
+        <VSectionHeader theme={theme} title="Panorama semanal" subtitle="Adherencia, enfoque y señales accionables." />
         {flow.summaryError ? <Text style={styles.error}>{flow.summaryError}</Text> : null}
         {flow.summaryError ? (
           <VButton
@@ -368,9 +447,9 @@ export function SummaryScreen({ theme, flow }) {
         ) : (
           <>
             <View style={styles.metricsGrid}>
-              <View style={[styles.metricCard, { backgroundColor: theme.colors.mintSoft, borderColor: theme.colors.progressBorder }]}>
+              <View style={[styles.metricCard, { backgroundColor: theme.colors.accentBrandSoft, borderColor: theme.colors.borderStrong }]}>
                 <Text style={styles.metricCardLabel}>Adherencia</Text>
-                <Text style={[styles.metricCardValue, { color: theme.colors.mintDark }]}>{summary.avgPct}%</Text>
+                <Text style={[styles.metricCardValue, { color: theme.colors.accentBrandStrong }]}>{summary.avgPct}%</Text>
               </View>
               <View style={styles.metricCard}>
                 <Text style={styles.metricCardLabel}>Tareas</Text>
@@ -382,22 +461,39 @@ export function SummaryScreen({ theme, flow }) {
               </View>
             </View>
 
+            <View style={styles.emptyStateCard}>
+              <Text style={styles.emptyStateEyebrow}>{weeklyOperatingStatus.eyebrow}</Text>
+              <Text style={styles.emptyStateTitle}>{weeklyOperatingStatus.title}</Text>
+              <Text style={styles.emptyStateText}>{weeklyOperatingStatus.text}</Text>
+              {!summary.hasData ? (
+                <Text style={styles.emptyStateText}>
+                  Completa al menos una tarea diaria durante siete dias para desbloquear una lectura semanal mas util.
+                </Text>
+              ) : null}
+            </View>
+
             <View style={styles.trendCard}>
               <Text style={styles.trendTitle}>Tendencia 7 días</Text>
-              <View style={styles.barsRow}>
-                {trend.map((d) => {
-                  const label = d.date.slice(5);
-                  const barHeight = Math.max(4, Math.round((d.pct / 100) * 72));
-                  return (
-                    <View key={d.date} style={styles.barWrap}>
-                      <View style={styles.barTrack}>
-                        <View style={[styles.barFill, { height: barHeight }]} />
+              {!summary.hasData ? (
+                <Text style={styles.emptyStateText}>
+                  Aún no hay historial semanal suficiente. Cuando exista base, aquí verás la curva real de adherencia y estabilidad.
+                </Text>
+              ) : (
+                <View style={styles.barsRow}>
+                  {trend.map((d) => {
+                    const label = d.date.slice(5);
+                    const barHeight = Math.max(4, Math.round((d.pct / 100) * 72));
+                    return (
+                      <View key={d.date} style={styles.barWrap}>
+                        <View style={styles.barTrack}>
+                          <View style={[styles.barFill, { height: barHeight }]} />
+                        </View>
+                        <Text style={styles.barLabel}>{label}</Text>
                       </View>
-                      <Text style={styles.barLabel}>{label}</Text>
-                    </View>
-                  );
-                })}
-              </View>
+                    );
+                  })}
+                </View>
+              )}
             </View>
 
             <View style={styles.trendCard}>

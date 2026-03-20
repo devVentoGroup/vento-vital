@@ -25,18 +25,22 @@ const MODULE_LABELS = {
 
 function createStyles(theme) {
   return {
-    section: { ...theme.blocks.section },
+    section: { ...theme.blocks.section, gap: theme.spacing.md },
     error: { color: theme.colors.error },
     heroCard: {
       borderRadius: theme.radius.xxl,
       borderWidth: 1,
-      borderColor: theme.colors.progressBorder,
+      borderColor: theme.colors.borderStrong,
       overflow: "hidden",
       ...theme.elevations.card
     },
     heroInner: {
-      padding: theme.spacing.md,
-      gap: 14
+      padding: theme.spacing.lg,
+      gap: 16
+    },
+    heroEyebrow: {
+      ...theme.typography.label,
+      color: theme.colors.accentBrandStrong
     },
     heroTop: {
       flexDirection: "row",
@@ -46,7 +50,7 @@ function createStyles(theme) {
     },
     heroTitleWrap: {
       flex: 1,
-      gap: 6
+      gap: 8
     },
     heroTitle: {
       color: theme.colors.textPrimary,
@@ -54,8 +58,8 @@ function createStyles(theme) {
     },
     heroSubtitle: {
       color: theme.colors.textSecondary,
-      fontSize: 13,
-      lineHeight: 18,
+      fontSize: 14,
+      lineHeight: 20,
       fontFamily: "AvenirNext-Regular"
     },
     heroSourcePill: {
@@ -63,11 +67,11 @@ function createStyles(theme) {
       paddingHorizontal: 10,
       paddingVertical: 6,
       borderWidth: 1,
-      borderColor: theme.colors.progressBorder,
-      backgroundColor: theme.colors.mintSoft
+      borderColor: theme.colors.borderStrong,
+      backgroundColor: theme.colors.accentBrandSoft
     },
     heroSourceText: {
-      color: theme.colors.mintDark,
+      color: theme.colors.accentBrandStrong,
       fontSize: 11,
       fontWeight: "700",
       fontFamily: "AvenirNext-DemiBold"
@@ -89,8 +93,8 @@ function createStyles(theme) {
     },
     emptyCard: {
       ...theme.blocks.panel,
-      borderColor: theme.colors.border,
-      backgroundColor: theme.colors.card,
+      borderColor: theme.colors.borderStrong,
+      backgroundColor: theme.colors.cardMuted,
       gap: 6
     },
     emptyTitle: {
@@ -108,12 +112,12 @@ function createStyles(theme) {
     timelineWrap: { gap: theme.spacing.sm },
     focusCard: {
       ...theme.blocks.panel,
-      borderColor: theme.colors.progressBorder,
-      backgroundColor: theme.colors.mintSoft,
+      borderColor: theme.colors.borderStrong,
+      backgroundColor: theme.colors.accentBrandSoft,
       gap: 8
     },
     focusTitle: {
-      color: theme.colors.mintDark,
+      color: theme.colors.accentBrandStrong,
       fontSize: 12,
       fontWeight: "700",
       fontFamily: "AvenirNext-DemiBold"
@@ -143,8 +147,8 @@ function createStyles(theme) {
     },
     progressCard: {
       ...theme.blocks.metric,
-      backgroundColor: theme.colors.mintSoft,
-      borderColor: theme.colors.progressBorder,
+      backgroundColor: theme.colors.cardMuted,
+      borderColor: theme.colors.borderStrong,
       gap: 8
     },
     progressHeader: {
@@ -153,13 +157,13 @@ function createStyles(theme) {
       alignItems: "center"
     },
     progressTitle: {
-      color: theme.colors.mintDark,
+      color: theme.colors.textPrimary,
       fontWeight: "600",
       fontSize: 14,
       fontFamily: "AvenirNext-DemiBold"
     },
     progressValue: {
-      color: theme.colors.mintDark,
+      color: theme.colors.accentBrandStrong,
       fontWeight: "700",
       fontSize: 14,
       fontFamily: "AvenirNext-DemiBold"
@@ -208,20 +212,36 @@ export function HoyScreen({ theme, flow }) {
     day: "numeric",
     month: "long"
   });
+  const hasSafetyFlag = Boolean(flow.safetyStatus?.requires_professional_check);
+  const heroSubtitleText = useMemo(() => {
+    const modulesText =
+      activeModules.length > 0
+        ? activeModules.map((m) => MODULE_LABELS[m] || m).join(" · ")
+        : "Aún no has activado módulos desde Perfil";
+    if (hasSafetyFlag) {
+      return `${todayLabel}. Vital mantendrá hoy un enfoque más cuidadoso mientras revisas tu estado y cargas activas.`;
+    }
+    return `${todayLabel}. Vista diaria para ejecutar sobre ${modulesText} sin perder claridad en qué es realmente importante hoy.`;
+  }, [todayLabel, activeModules, hasSafetyFlag]);
 
   return (
     <>
       <View style={styles.heroCard}>
         <LinearGradient
-          colors={theme.mode === "dark" ? ["#132920", theme.colors.surface] : ["#E6FBF3", "#FFFFFF"]}
+          colors={
+            theme.mode === "dark"
+              ? [theme.colors.surfaceHero, theme.colors.card, theme.colors.surface]
+              : [theme.colors.surfaceHero, theme.colors.card, theme.colors.surface]
+          }
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.heroInner}
         >
+          <Text style={styles.heroEyebrow}>CENTRO DE DECISIÓN DIARIA</Text>
           <View style={styles.heroTop}>
             <View style={styles.heroTitleWrap}>
               <Text style={styles.heroTitle}>HOY</Text>
-              <Text style={styles.heroSubtitle}>{`${todayLabel}. Tu plan del día, ordenado por prioridad y contexto.`}</Text>
+              <Text style={styles.heroSubtitle}>{heroSubtitleText}</Text>
             </View>
             <View style={styles.heroSourcePill}>
               <Text style={styles.heroSourceText}>{sourceLabel}</Text>
@@ -272,8 +292,8 @@ export function HoyScreen({ theme, flow }) {
         </LinearGradient>
       </View>
 
-      <VCard theme={theme} style={styles.section}>
-        <VSectionHeader theme={theme} title="Timeline de HOY" subtitle="Ordenado por prioridad para que sepas qué hacer primero." />
+      <VCard theme={theme} style={styles.section} tone="muted">
+        <VSectionHeader theme={theme} title="Timeline de HOY" subtitle="Prioridad visible, contexto claro y acciones rápidas para no perder ritmo." />
         {!showSkeleton ? (
           <View style={{ gap: 8 }}>
             <View style={styles.modulesRow}>
@@ -366,7 +386,7 @@ export function HoyScreen({ theme, flow }) {
               <View style={styles.progressTrack}>
                 <Animated.View style={[styles.progressFill, { transform: [{ scaleX: flow.progressScale }] }]}>
                   <LinearGradient
-                    colors={[theme.colors.mintPrimary, theme.colors.mintDark]}
+                    colors={[theme.colors.accentBrand, theme.colors.accentHealth]}
                     start={{ x: 0, y: 0.5 }}
                     end={{ x: 1, y: 0.5 }}
                     style={{ flex: 1, borderRadius: 999 }}

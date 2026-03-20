@@ -1,17 +1,10 @@
 import React from "react";
 import { Text, View } from "react-native";
+import { VCard } from "../../components/VCard";
 
 function createStyles(theme) {
   return {
-    card: {
-      backgroundColor: theme.colors.card,
-      borderWidth: 1,
-      borderColor: theme.colors.border,
-      borderRadius: theme.radius.xl,
-      padding: theme.spacing.sm,
-      gap: 10,
-      ...theme.elevations.card
-    },
+    card: { gap: 12 },
     titleRow: {
       flexDirection: "row",
       justifyContent: "space-between",
@@ -28,6 +21,12 @@ function createStyles(theme) {
       color: theme.colors.textSecondary,
       fontFamily: "AvenirNext-Regular"
     },
+    intro: {
+      color: theme.colors.textSecondary,
+      fontSize: 13,
+      lineHeight: 18,
+      fontFamily: "AvenirNext-Regular"
+    },
     row: {
       flexDirection: "row",
       gap: 8
@@ -35,9 +34,10 @@ function createStyles(theme) {
     metricCard: {
       flex: 1,
       borderWidth: 1,
-      borderRadius: 14,
+      borderRadius: 16,
       paddingHorizontal: 10,
-      paddingVertical: 10
+      paddingVertical: 12,
+      gap: 4
     },
     metric: {
       color: theme.colors.textSecondary,
@@ -51,7 +51,7 @@ function createStyles(theme) {
       fontFamily: "AvenirNext-DemiBold"
     },
     valueProgress: {
-      color: theme.colors.mintDark,
+      color: theme.colors.accentBrandStrong,
       fontWeight: "700",
       fontSize: 14,
       fontFamily: "AvenirNext-DemiBold"
@@ -70,13 +70,14 @@ export function HoySummaryCard({ theme, completedCount, inProgressCount, pending
   const total = completedCount + inProgressCount + pendingCount;
 
   return (
-    <View style={styles.card}>
+    <VCard theme={theme} style={styles.card} tone="muted">
       <View style={styles.titleRow}>
         <Text style={styles.title}>Estado del día</Text>
         <Text style={styles.subtitle}>{`${total} tareas`}</Text>
       </View>
+      <Text style={styles.intro}>Un resumen rápido para entender ejecución, foco activo y lo que sigue pendiente.</Text>
       <View style={styles.row}>
-        <View style={[styles.metricCard, { backgroundColor: theme.colors.mintSoft, borderColor: theme.colors.progressBorder }]}>
+        <View style={[styles.metricCard, { backgroundColor: theme.colors.accentHealthSoft, borderColor: theme.colors.progressBorder }]}>
           <Text style={styles.metric}>Hechas</Text>
           <Text style={styles.valueDone}>{completedCount}</Text>
         </View>
@@ -84,19 +85,19 @@ export function HoySummaryCard({ theme, completedCount, inProgressCount, pending
           style={[
             styles.metricCard,
             {
-              backgroundColor: theme.colors.mintSoft,
-              borderColor: theme.colors.progressBorder
+              backgroundColor: theme.colors.accentBrandSoft,
+              borderColor: theme.colors.borderStrong
             }
           ]}
         >
           <Text style={styles.metric}>En curso</Text>
           <Text style={styles.valueProgress}>{inProgressCount}</Text>
         </View>
-        <View style={[styles.metricCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}>
+        <View style={[styles.metricCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.borderStrong }]}>
           <Text style={styles.metric}>Pendientes</Text>
           <Text style={styles.valuePending}>{pendingCount}</Text>
         </View>
       </View>
-    </View>
+    </VCard>
   );
 }

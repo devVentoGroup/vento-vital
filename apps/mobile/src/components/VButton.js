@@ -3,22 +3,23 @@ import { Pressable, Text } from "react-native";
 
 export function VButton({ theme, title, onPress, disabled, loading = false, variant = "primary", style }) {
   const isPrimary = variant === "primary";
+  const isSecondary = variant === "secondary";
   const buttonStyle = {
-    borderRadius: 16,
-    minHeight: isPrimary ? 50 : 44,
+    borderRadius: 18,
+    minHeight: isPrimary ? 52 : 46,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: isPrimary ? 0 : 1,
-    borderColor: isPrimary ? "transparent" : theme.colors.borderStrong,
-    backgroundColor: isPrimary ? theme.colors.cta : theme.colors.cardAlt,
+    borderWidth: 1,
+    borderColor: isPrimary ? theme.colors.accentBrand : theme.colors.borderStrong,
+    backgroundColor: isPrimary ? theme.colors.cta : isSecondary ? theme.colors.card : theme.colors.cardAlt,
     opacity: disabled ? 0.65 : 1
   };
   const textStyle = {
     color: isPrimary ? theme.colors.ctaText : theme.colors.textPrimary,
     fontWeight: "700",
-    fontSize: 15,
+    fontSize: 14,
     fontFamily: "AvenirNext-DemiBold",
-    letterSpacing: 0.1
+    letterSpacing: 0.2
   };
 
   return (
@@ -26,7 +27,7 @@ export function VButton({ theme, title, onPress, disabled, loading = false, vari
       style={({ pressed }) => [
         buttonStyle,
         isPrimary && pressed ? { backgroundColor: theme.colors.ctaPressed } : null,
-        !isPrimary && pressed ? { borderColor: theme.colors.progressBorder, backgroundColor: theme.colors.surface } : null,
+        !isPrimary && pressed ? { borderColor: theme.colors.accentBrand, backgroundColor: theme.colors.cardAlt } : null,
         style
       ]}
       disabled={disabled}

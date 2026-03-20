@@ -7,7 +7,7 @@ export function PageShell({ theme, profile, children }) {
       style={{
         position: "relative",
         padding: theme.spacing.md,
-        gap: theme.spacing.sm,
+        gap: theme.spacing.md,
         maxWidth: profile.formFactor === "tablet" ? 920 : 760,
         alignSelf: "center",
         width: "100%"
@@ -17,10 +17,10 @@ export function PageShell({ theme, profile, children }) {
         pointerEvents="none"
         style={{
           position: "absolute",
-          top: -80,
-          right: -50,
-          width: 210,
-          height: 210,
+          top: -72,
+          right: -42,
+          width: 220,
+          height: 220,
           borderRadius: 999,
           backgroundColor: theme.colors.ambientA
         }}
@@ -29,10 +29,10 @@ export function PageShell({ theme, profile, children }) {
         pointerEvents="none"
         style={{
           position: "absolute",
-          top: 180,
-          left: -90,
-          width: 230,
-          height: 230,
+          top: 210,
+          left: -78,
+          width: 210,
+          height: 210,
           borderRadius: 999,
           backgroundColor: theme.colors.ambientB
         }}
@@ -41,10 +41,10 @@ export function PageShell({ theme, profile, children }) {
         pointerEvents="none"
         style={{
           position: "absolute",
-          bottom: -120,
-          right: -80,
-          width: 220,
-          height: 220,
+          bottom: -100,
+          right: -56,
+          width: 180,
+          height: 180,
           borderRadius: 999,
           backgroundColor: theme.colors.ambientC
         }}
